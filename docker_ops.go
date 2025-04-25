@@ -1,5 +1,4 @@
-// docker_ops.go
-package main
+package dockerops
 
 import (
 	"fmt"
@@ -7,23 +6,34 @@ import (
 )
 
 // 启动 Docker 容器
-func startDockerContainer(containerName, imageName string, portMapping string) error {
-	cmd := exec.Command("docker", "run", "-d", "--name", containerName, "-p", portMapping, imageName)
-	output, err := cmd.CombinedOutput()
+func StartContainer(containerName string, port string, image string) {
+	cmd := exec.Command("docker", "run", "-d", "--name", containerName, "-p", port, image)
+	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("启动容器失败: %v", err)
+		fmt.Println("启动容器失败:", err)
+		return
 	}
-	fmt.Printf("容器启动成功: %s\n", output)
-	return nil
+	fmt.Println("容器已启动:", containerName)
 }
 
 // 停止 Docker 容器
-func stopDockerContainer(containerName string) error {
+func StopContainer(containerName string) {
 	cmd := exec.Command("docker", "stop", containerName)
-	output, err := cmd.CombinedOutput()
+	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("停止容器失败: %v", err)
+		fmt.Println("停止容器失败:", err)
+		return
 	}
-	fmt.Printf("容器已停止: %s\n", output)
-	return nil
+	fmt.Println("容器已停止:", containerName)
+}
+
+// 删除 Docker 容器
+func RemoveContainer(containerName string) {
+	cmd := exec.Command("docker", "rm", containerName)
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("删除容器失败:", err)
+		return
+	}
+	fmt.Println("容器已删除:", containerName)
 }
